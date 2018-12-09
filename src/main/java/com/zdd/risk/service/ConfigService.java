@@ -18,7 +18,7 @@ import java.util.Properties;
  * @author 租无忧科技有限公司
  * @createtime 2016年9月26日下午8:47:14
  */
-public class ConfigService implements  IConfigService{
+public class ConfigService implements IConfigService {
 
 	/** constants:系统常量 */
 	private static final Map<String, String> constants = new HashMap<String, String>();

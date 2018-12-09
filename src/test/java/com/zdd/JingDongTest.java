@@ -1,6 +1,7 @@
-package com.zdd.risk.api;
+package com.zdd;
 
 import com.alibaba.fastjson.JSONObject;
+import com.zdd.risk.api.JingdongController;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,20 +69,20 @@ public class JingDongTest {
     }
 
 
-    @ApiOperation("3.3返回ZRobot风控服务回调接口")
+    @ApiOperation("3.3授权额度回调接口")
     @RequestMapping(value = "/test3")
     public void test3() {
 
         JSONObject jsonObject = new JSONObject();
         //测试数据
-        jsonObject.put("bizno", "154330580991000002");
-        jsonObject.put("userId", "jirhat17f9us");
-        jsonObject.put("applyid", "154330580991000001");
+        jsonObject.put("bizno", "1233");
+        jsonObject.put("userId", "1233");
+        jsonObject.put("applyid", "1233");
 
 
 
 
-         jingdongController.resultApproveToZRobot("jirhat17f9us");
+         jingdongController.resultApproveToZRobot("1234");
 
         System.out.println("1");
 

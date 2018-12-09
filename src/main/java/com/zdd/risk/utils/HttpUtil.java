@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+
 public class HttpUtil {
 
 	public static String RequestForm(String Url, Map<String, String> Parms, HttpMethod httpMethod) {
@@ -72,7 +73,7 @@ public class HttpUtil {
 	 * @throws Exception
 	 */
 	public static SimpleHttpResponse doRequest(SimpleHttpClient simpleHttpclient, HttpSendModel httpSendModel,
-			String getCharSet) throws Exception {
+                                               String getCharSet) throws Exception {
 
 		HttpRequestBase httpRequest = buildHttpRequest(httpSendModel);
 

@@ -7,7 +7,7 @@ import com.zdd.risk.constant.ResponseCode;
  * @author 租无忧科技有限公司
  * @date 2018-11-01.
  */
-public class ResponseResult extends BaseBean{
+public class ResponseResult extends BaseBean {
 
     private String traceID; //链路ID
     private int code = ResponseCode.REQUEST_SUCCESS; //响应状态

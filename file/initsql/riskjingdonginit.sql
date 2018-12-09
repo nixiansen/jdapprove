@@ -146,7 +146,7 @@ alter TABLE risk_applyamount modify  COLUMN bizno VARCHAR(20);
 alter TABLE risk_approveresult modify  COLUMN bizno VARCHAR (20);
 
 
---=====================================2018-11-20增加银行信息字段=====================================-
+--=====================================2018-11-20增加银行信息字段=====================================
 ALTER TABLE risk_applyamount ADD COLUMN realName VARCHAR (10) COMMENT "姓名", ADD COLUMN idCard VARCHAR (20) COMMENT "身份证号", ADD COLUMN bankCard VARCHAR (20) COMMENT "银行卡号" ,ADD COLUMN bankName VARCHAR (20) COMMENT "所属银行", ADD COLUMN bankMobile VARCHAR (20) COMMENT "银行预留手机号";
 ALTER TABLE risk_certificationuserinfo ADD COLUMN idCard VARCHAR (20) COMMENT "身份证号",ADD COLUMN bankName VARCHAR (20) COMMENT "所属银行" ;
 
@@ -161,3 +161,51 @@ ALTER TABLE risk_certificationuserinfo CHANGE applyid applyId  VARCHAR(20)  COMM
 ALTER TABLE risk_applyamount CHANGE bizno bizNo  VARCHAR(20)  COMMENT "订单号";
 ALTER TABLE risk_approveresult CHANGE bizno bizNo  VARCHAR(20)  COMMENT "订单号";
 
+--=============================2018-11-21修改表类型=======================
+alter TABLE risk_certificationuserinfo modify  COLUMN idCardValidDate VARCHAR(30)  COMMENT " 身份证有效日期";
+
+alter TABLE risk_certificationuserinfo modify  COLUMN regOs mediumtext COMMENT " 注册设备[系统,版本,手机型号]";
+ALTER TABLE risk_accredit CHANGE orderId taskId   varchar(20)  COMMENT "第三方授权编号";
+
+alter TABLE risk_accredit modify  COLUMN accreditInfo text COMMENT " 用户授权信息";
+alter TABLE risk_applyamount modify  COLUMN bankName varchar(50) COMMENT " 所属银行";
+alter TABLE risk_certificationuserinfo modify  COLUMN gpsAddress varchar(200) COMMENT " 最后更新gps 地址";
+alter TABLE risk_certificationuserinfo modify  COLUMN bankName varchar(50) COMMENT " 所属银行";
+ALTER table risk_certificationuserinfo ADD COLUMN  productId VARCHAR(3) COMMENT "产品形态";
+
+alter TABLE risk_certificationuserinfo modify  COLUMN realName varchar(20) COMMENT " 姓名";
+alter TABLE risk_certificationuserinfo modify  COLUMN sosContactName varchar(20) COMMENT " 紧急联系人姓名";
+alter TABLE risk_certificationuserinfo modify  COLUMN sosContactName1 varchar(20) COMMENT " 紧急联系人姓名1";
+alter TABLE risk_certificationuserinfo modify  COLUMN longitude varchar(20) COMMENT " 最后更新gps 经度";
+alter TABLE risk_certificationuserinfo modify  COLUMN latitude varchar(20) COMMENT " 最后更新gps 纬度";
+alter TABLE risk_certificationuserinfo modify  COLUMN regFrom varchar(5) COMMENT " 进件引流渠道(建议0为自然流量，其他渠道请提供对应码表)";
+
+
+alter TABLE risk_accredit modify  COLUMN taskId varchar(50)  COMMENT "第三方授权编号";
+
+alter TABLE risk_applyamount modify  COLUMN modelNo varchar(100)  COMMENT "规格/型号（租赁场景）";
+
+
+--=============================2018-11-27修改表类型=======================
+ALTER TABLE risk_certificationuserinfo ADD COLUMN addressBook mediumtext COMMENT "通讯录" ;
+
+
+-================================2018-12-07增加表结构===============
+CREATE TABLE `risk_approvestrategyresult` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `userId` varchar(20) NOT NULL COMMENT '用户唯一编号',
+  `bizNo` varchar(20) DEFAULT NULL COMMENT '订单号',
+  `applyId` varchar(20) CHARACTER SET utf16le DEFAULT NULL COMMENT '进件编号',
+  `mobileAuthentication` varchar(10) DEFAULT NULL COMMENT '三要素是否一致',
+  `virtualTip` varchar(10) DEFAULT NULL COMMENT '是否命中虚拟运营商标签',
+  `mobileOnlineTime` varchar(10) DEFAULT NULL COMMENT '手机号入网时长（月）',
+  `loanBlackList` varchar(10) DEFAULT NULL COMMENT '是否命中网贷黑名单',
+  `zrobotCredit` text COMMENT 'ZRobot信用',
+  `zrobotBlack` text COMMENT '黑名单-ZRobot',
+  `financalBehavior` text COMMENT '金融行为标签',
+  `antiFraud` text COMMENT '反欺诈数据',
+  `remark` varchar(30) DEFAULT NULL COMMENT '备注',
+  `createTime` datetime DEFAULT NULL COMMENT '创建时间',
+  `updateTime` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4;
