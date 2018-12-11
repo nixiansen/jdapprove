@@ -30,8 +30,8 @@ public class JingDongService {
         //查询用户的授权信息
         List<Accredit> list = jingdongdao.selectTaskids(uid);
         log.info("获取用户的授权信息集合参数 list= " + JSONObject.toJSONString(list));
-        System.out.println(productId);
-        System.out.println(list.size());
+//        System.out.println(productId);
+//        System.out.println(list.size());
         if (list.size() == 0) {
             jsonObject.put("getTaobaoInfo", "");
             jsonObject.put("getTaobaoReport", "");
@@ -40,7 +40,7 @@ public class JingDongService {
             if (productId.equals("1")) {
                 for (int i = 0; i < list.size(); i++) {
                     Accredit accredit = (Accredit) list.get(i);
-                    System.out.println(accredit.getType());
+//                    System.out.println(accredit.getType());
                     if (accredit.getType().equals("1")) {
                         jsonObject.put("getEducationInfo", accredit.getTaskId());
 
@@ -53,7 +53,7 @@ public class JingDongService {
             if (productId.equals("2")) {
                 for (int i = 0; i < list.size(); i++) {
                     Accredit accredit = (Accredit) list.get(i);
-                    System.out.println(accredit.getType());
+//                    System.out.println(accredit.getType());
                     if (accredit.getType().equals("3")) {
                         jsonObject.put("getCarrierInfo", accredit.getTaskId());
                         jsonObject.put("getCarrierReport", accredit.getTaskId());
@@ -110,8 +110,6 @@ public class JingDongService {
                 jsonObject.put("bizNo", accredit.getBizNo());
             }
         }
-
-
 //        System.out.println(list.size());
         return jsonObject;
 

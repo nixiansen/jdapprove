@@ -27,7 +27,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/risk/model")
-public class CreditRatingController {
+public class CreditRatingController{
 
 	private static final Logger log = LoggerFactory.getLogger(CreditRatingController.class);
 
