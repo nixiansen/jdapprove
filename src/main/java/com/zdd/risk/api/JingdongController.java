@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -188,7 +189,7 @@ public class JingdongController {
             @Override
             public void run() {
                 try {
-                    Thread.sleep(8000);
+                    Thread.sleep(90000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -241,6 +242,52 @@ public class JingdongController {
         return new JSONObject(reMap);
     }
 
+
+    @ApiOperation("3.3返回ZRobot风控服务回调接口")
+    @RequestMapping(value = "/resultApproveToZRobot")
+    public void resultApproveToZRobot(@RequestBody String userId) {
+        log.info("返回ZRobot风控服务回调接口入参 userId= " + userId);
+
+        //通过userID查询数据
+        String approveResute = jingDongService.selectByExample1(userId);
+        Map<String, JSONObject> map = new HashMap<String, JSONObject>();
+        JSONObject jsonObject = JSONObject.parseObject(approveResute);
+        map.put("result", jsonObject);
+        log.info("回调业务部门的接口传入参数信息 ：" + map.toString());
+        //回调业务部门的接口
+        HttpUtils http = new HttpUtils();
+        String result1 = http.doPostHttp1(tobizurl, map);
+        log.info("回调业务部门的接口返回信息 result= " + result1);
+    }
+
+
+    @ApiOperation("3.4京东风控策略详细返回信息")
+    @RequestMapping(value = "/approveStrategyResult")
+    public JSONObject approveStrategyResult(@RequestBody String param) {
+        log.info("京东风控策略详细返回信息 param= " + param);
+        Map reMap = new HashMap();
+        reMap.put("success", "true");
+        JSONObject params = JSONObject.parseObject(param);
+        params.put("zrobotCredit", params.getString("zrobotCredit"));
+        params.put("zrobotBlack", params.getString("zrobotBlack"));
+        params.put("financalBehavior", params.getString("financalBehavior"));
+        params.put("antiFraud", params.getString("antiFraud"));
+        params.put("userId", params.getString("uid"));
+        //insert DB
+        log.info("往risk_approveStrategyResult表插入数据参数 param1= " + params);
+        ApproveStrategyResult record = params.toJavaObject(ApproveStrategyResult.class);
+        record.setCreateTime(new Date());
+        log.info("往risk_approveStrategyResult表插入数据参数 param1= " + JSONObject.toJSONString(record));
+        int a = approveStrategyResultDAO.insert(record);
+        if (a != 1) {
+            reMap.put("success", "false");
+        }
+        //TODO
+        //回调业务系统
+        return new JSONObject(reMap);
+    }
+
+
     @ApiOperation("3.5ZRobot风控审批结果回调接口")
     @RequestMapping(value = "/approveResultFromZRobottwo")
     public JSONObject approveResultFromZRobottwo(@RequestBody String param) {
@@ -267,51 +314,74 @@ public class JingdongController {
         return new JSONObject(reMap);
     }
 
-
-    @ApiOperation("3.3返回ZRobot风控服务回调接口")
-    @RequestMapping(value = "/resultApproveToZRobot")
-    public void resultApproveToZRobot(@RequestBody String userId) {
-        log.info("返回ZRobot风控服务回调接口入参 userId= " + userId);
-
-        //通过userID查询数据
-        String approveResute = jingDongService.selectByExample1(userId);
-        Map<String, JSONObject> map = new HashMap<String, JSONObject>();
-        JSONObject jsonObject = JSONObject.parseObject(approveResute);
-        map.put("result", jsonObject);
-        log.info("回调业务部门的接口传入参数信息 ：" + map.toString());
-        //回调业务部门的接口
-        HttpUtils http = new HttpUtils();
-        String result1 = http.doPostHttp1(tobizurl, map);
-        log.info("回调业务部门的接口返回信息 result= " + result1);
-    }
-
-
-    @ApiOperation("3.4京东风控策略详细返回信息")
-    @RequestMapping(value = "/approveStrategyResult")
-    public JSONObject approveStrategyResult(@RequestBody String param) {
-
-        log.info("京东风控策略详细返回信息 param= " + param);
-        Map reMap = new HashMap();
-        reMap.put("success", "true");
+    @ApiOperation("3.6获取魔蝎淘宝数据爬取结果回调接口")
+    @RequestMapping(value = "/moxieTaobaoCallback")
+    public void moxieTaobaoCallback(@RequestBody String param,HttpServletResponse response) {
+        log.info("3.6获取魔蝎淘宝数据爬取结果回调接口入参 param= " + param);
         JSONObject params = JSONObject.parseObject(param);
-        params.put("zrobotCredit", params.getString("zrobotCredit"));
-        params.put("zrobotBlack", params.getString("zrobotBlack"));
-        params.put("financalBehavior", params.getString("financalBehavior"));
-        params.put("antiFraud", params.getString("antiFraud"));
-        params.put("userId", params.getString("uid"));
-        //insert DB
-        log.info("往risk_approveStrategyResult表插入数据参数 param1= " + params);
-        ApproveStrategyResult record = params.toJavaObject(ApproveStrategyResult.class);
-        record.setCreateTime(new Date());
-        log.info("往risk_approveStrategyResult表插入数据参数 param1= " + JSONObject.toJSONString(record));
-        int a = approveStrategyResultDAO.insert(record);
-        if (a != 1) {
-            reMap.put("success", "false");
+        params.put("taskId", params.getString("task_id"));
+        params.put("accreditInfo", params.getString("result"));
+        params.put("userId", params.getString("user_id"));
+        if (params.getString("result").equals("true")) {
+            moXieController.getTaobaoInfo(params.toJSONString());
+            moXieController.getTaobaoReport(params.toJSONString());
         }
-        //TODO
-        //回调业务系统
-        return new JSONObject(reMap);
+        Accredit record = params.toJavaObject(Accredit.class);
+        record.setType("4");
+        record.setCreateTime(new Date());
+        log.info("获取魔蝎淘宝数据爬取结果回调信息数据后往risk_accredit表插入数据参数：" + JSONObject.toJSONString(record));
+        int a = accreditDAO.insert(record);
+        if (a != 1) {
+            log.info("获取魔蝎淘宝数据爬取结果回调信息数据后往risk_accredit表插入数据失败！");
+        }
+        response.setStatus(201);
     }
+
+    @ApiOperation("3.7获取魔蝎学信网数据爬取结果回调接口")
+    @RequestMapping(value = "/moxieXuexinCallback")
+    public void moxieXuexinCallback(@RequestBody String param,HttpServletResponse response) {
+        log.info("3.7获取魔蝎学信网数据爬取结果回调接口 param= " + param);
+        JSONObject params = JSONObject.parseObject(param);
+        params.put("taskId", params.getString("task_id"));
+        params.put("accreditInfo", params.getString("result"));
+        params.put("userId", params.getString("user_id"));
+        if (params.getString("result").equals("true")) {
+            moXieController.getEducationInfo(params.toJSONString());
+        }
+        Accredit record = params.toJavaObject(Accredit.class);
+        record.setType("5");
+        record.setCreateTime(new Date());
+        log.info("获取魔蝎学信网数据爬取结果回调信息数据后往risk_accredit表插入数据参数：" + JSONObject.toJSONString(record));
+        int a = accreditDAO.insert(record);
+        if (a != 1) {
+            log.info("获取魔蝎学信网数据爬取结果回调信息数据后往risk_accredit表插入数据失败！");
+        }
+        response.setStatus(201);
+    }
+
+    @ApiOperation("3.8获取魔蝎运营商数据爬取结果回调接口")
+    @RequestMapping(value = "/moxieYysCallback")
+    public void moxieYysCallback(@RequestBody String param,HttpServletResponse response) {
+        log.info("3.8获取魔蝎运营商数据爬取结果回调接口 param= " + param);
+        JSONObject params = JSONObject.parseObject(param);
+        params.put("taskId", params.getString("task_id"));
+        params.put("accreditInfo", params.getString("result"));
+        params.put("userId", params.getString("user_id"));
+        if (params.getString("result").equals("true")) {
+            moXieController.getCarrierReport(params.toJSONString());
+            moXieController.getCarrierInfo(params.toJSONString());
+        }
+        Accredit record = params.toJavaObject(Accredit.class);
+        record.setType("6");
+        record.setCreateTime(new Date());
+        log.info("获取魔蝎运营商数据爬取结果回调信息数据后往risk_accredit表插入数据参数：" + JSONObject.toJSONString(record));
+        int a = accreditDAO.insert(record);
+        if (a != 1) {
+            log.info("获取魔蝎运营商数据爬取结果回调信息数据后往risk_accredit表插入数据失败！");
+        }
+        response.setStatus(201);
+    }
+
 
     @ApiOperation("4.1获取用户申请额度接口")
     @RequestMapping(value = "/getApplyAmountFromZDD", method = RequestMethod.GET)
@@ -487,51 +557,51 @@ public class JingdongController {
         //JSONObject result = new JSONObject();
         JSONObject params = JSONObject.parseObject(param);
 
-        ExecutorService executorService = Executors.newFixedThreadPool(20);
-
-        if (params.getString("type").equals("1")) {
-            executorService.execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Thread.sleep(8000);
-//                        System.out.println("你好");
-                        moXieController.getCarrierInfo(param);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-            });
-        } else if (params.getString("type").equals("2")) {
-            executorService.execute(new Runnable() {
-                @Override
-                public void run() {
-
-                    try {
-                        Thread.sleep(8000);
-                        moXieController.getTaobaoInfo(param);
-                        moXieController.getTaobaoReport(param);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-        } else if (params.getString("type").equals("3")) {
-            executorService.execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Thread.sleep(8000);
-                        moXieController.getCarrierReport(param);
-                        moXieController.getEducationInfo(param);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-        }
-        System.out.println("===============================");
+//        ExecutorService executorService = Executors.newFixedThreadPool(20);
+//
+//        if (params.getString("type").equals("1")) {
+//            executorService.execute(new Runnable() {
+//                @Override
+//                public void run() {
+//                    try {
+//                        Thread.sleep(8000);
+////                        System.out.println("你好");
+//                        moXieController.getCarrierInfo(param);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                }
+//            });
+//        } else if (params.getString("type").equals("2")) {
+//            executorService.execute(new Runnable() {
+//                @Override
+//                public void run() {
+//
+//                    try {
+//                        Thread.sleep(8000);
+//                        moXieController.getTaobaoInfo(param);
+//                        moXieController.getTaobaoReport(param);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            });
+//        } else if (params.getString("type").equals("3")) {
+//            executorService.execute(new Runnable() {
+//                @Override
+//                public void run() {
+//                    try {
+//                        Thread.sleep(8000);
+//                        moXieController.getCarrierReport(param);
+//                        moXieController.getEducationInfo(param);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            });
+//        }
+//        System.out.println("===============================");
         //insert DB
         Accredit record = params.toJavaObject(Accredit.class);
         record.setCreateTime(new Date());

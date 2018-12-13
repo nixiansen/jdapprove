@@ -117,4 +117,12 @@ public class JingDongService {
     }
 
 
+    public String selectAccreditUserId(String taskId) {
+        JSONObject jsonObject = new JSONObject();
+        //通过taskId查询userId
+        String resultUserid = jingdongdao.selectUserId(taskId);
+//        System.out.println(resultUserid);
+        return resultUserid;
+    }
+
 }

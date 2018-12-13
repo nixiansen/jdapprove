@@ -140,10 +140,10 @@ public class MoXieController {
 
 
 
-    @ApiOperation("1.3查询学信网信息V2接口")
+    @ApiOperation("1.3查询运营商原始数据信息接口")
     @RequestMapping(value = "/getCarrierInfo")
     public void getCarrierInfo(@RequestBody String param) {
-        log.info("获取1.3查询学信网信息V2接口入参 param= " + param);
+        log.info("获取1.3查询运营商原始数据信息接口入参 param= " + param);
         JSONObject params = JSONObject.parseObject(param);
         BasicHeader[] headers = new BasicHeader[]{
                 new BasicHeader("content-type", "application/json;charset=UTF-8"),
@@ -158,26 +158,26 @@ public class MoXieController {
         String idCard = cuil.getIdCard();
         String mobile = cuil.getMobile();
         try {
-            //taobao原始数据
+            //运营商原始数据
             result = httpUtil.sendGet(
-                    "https://api.51datakey.com/chsi/v2/students-educations/" + params.getString("taskId"),
+                    "https://api.51datakey.com/carrier/v3/mobiles/"+mobile+"/mxdata-ex?task_id="+params.getString("taskId"),
                     headers);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        log.info("调用1.3查询学信网信息V2接口返回信息 result= " + result);
+        log.info("调用1.3查询运营商原始数据信息接口返回信息 result= " + result);
         params.put("idCard", idCard);
         params.put("mobile", mobile);
         params.put("certificationItem", params.getString("taskId"));
         params.put("certificationResult", result);
         params.put("certificationLimit", tools.getTime());
         params.put("creatTime", new Date());
-        params.put("certificationType", 7);
+        params.put("certificationType", 8);
         params.put("flag",0);
         Certification record = params.toJavaObject(Certification.class);
         int a = certificationDAO.insert(record);
         if (a != 1) {
-            log.info("插入1.3查询学信网信息V2接口信息失败");
+            log.info("插入1.3查询运营商原始数据信息接口信息失败");
         }
     }
 
@@ -202,7 +202,7 @@ public class MoXieController {
         String idCard = cuil.getIdCard();
         String mobile = cuil.getMobile();
         try {
-            //taobao原始数据
+            //查询运营商报告信息
             result = httpUtil.sendGet(
                     "https://api.51datakey.com/carrier/v3/mobiles/"+mobile+"/mxreport",
                     headers);
@@ -230,10 +230,10 @@ public class MoXieController {
 
 
 
-    @ApiOperation("1.5查询运营商原始数据信息接口")
+    @ApiOperation("1.5查询学信网信息V2接口")
     @RequestMapping(value = "/getEducationInfo")
     public void getEducationInfo(@RequestBody String param) {
-        log.info("获取1.5查询运营商原始数据信息接口入参 param= " + param);
+        log.info("获取1.5查询学信网信息V2接口入参 param= " + param);
         JSONObject params = JSONObject.parseObject(param);
         BasicHeader[] headers = new BasicHeader[]{
                 new BasicHeader("content-type", "application/json;charset=UTF-8"),
@@ -248,26 +248,26 @@ public class MoXieController {
         String idCard = cuil.getIdCard();
         String mobile = cuil.getMobile();
         try {
-            //taobao原始数据
+            //学信网信息
             result = httpUtil.sendGet(
-                    "https://api.51datakey.com/carrier/v3/mobiles/"+mobile+"/mxdata-ex?task_id="+params.getString("taskId"),
+                    "https://api.51datakey.com/chsi/v2/students-educations/" + params.getString("taskId"),
                     headers);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        log.info("调用1.5查询运营商原始数据信息接口返回信息 result= " + result);
+        log.info("调用1.5查询学信网信息V2接口返回信息 result= " + result);
         params.put("idCard", idCard);
         params.put("mobile", mobile);
         params.put("certificationItem", params.getString("taskId"));
         params.put("certificationResult", result);
         params.put("certificationLimit", tools.getTime());
         params.put("creatTime", new Date());
-        params.put("certificationType", 8);
+        params.put("certificationType", 7);
         params.put("flag",0);
         Certification record = params.toJavaObject(Certification.class);
         int a = certificationDAO.insert(record);
         if (a != 1) {
-            log.info("插入1.5查询运营商原始数据信息接口信息失败");
+            log.info("插入1.5查询学信网信息V2接口信息失败");
         }
     }
 

@@ -29,4 +29,9 @@ public interface JingDongDao {
     public List<ApproveResult>  selectBizNo(@Param("userId") String uid);
 
 
+    @Select("SELECT userId FROM risk_accredit WHERE taskId = #{taskId}  ORDER BY createTime DESC LIMIT 1")
+    public String selectUserId(@Param("taskId") String taskId);
+
+
+
 }
