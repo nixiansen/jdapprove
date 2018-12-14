@@ -158,9 +158,9 @@ public class MoXieController {
         String idCard = cuil.getIdCard();
         String mobile = cuil.getMobile();
         try {
-            //运营商原始数据
+            //taobao原始数据
             result = httpUtil.sendGet(
-                    "https://api.51datakey.com/carrier/v3/mobiles/"+mobile+"/mxdata-ex?task_id="+params.getString("taskId"),
+                    "https://api.51datakey.com/chsi/v2/students-educations/" + params.getString("taskId"),
                     headers);
         } catch (Exception e) {
             e.printStackTrace();
@@ -202,7 +202,7 @@ public class MoXieController {
         String idCard = cuil.getIdCard();
         String mobile = cuil.getMobile();
         try {
-            //查询运营商报告信息
+            //taobao原始数据
             result = httpUtil.sendGet(
                     "https://api.51datakey.com/carrier/v3/mobiles/"+mobile+"/mxreport",
                     headers);
@@ -248,7 +248,7 @@ public class MoXieController {
         String idCard = cuil.getIdCard();
         String mobile = cuil.getMobile();
         try {
-            //学信网信息
+            //taobao原始数据
             result = httpUtil.sendGet(
                     "https://api.51datakey.com/chsi/v2/students-educations/" + params.getString("taskId"),
                     headers);
