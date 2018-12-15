@@ -511,7 +511,7 @@ public class JingdongController {
         CertificationUserInfoExample.Criteria criteria = example.createCriteria();
         criteria.andUserIdEqualTo(uid);
         //通过userID查询用户基本信息数据
-        List<CertificationUserInfo> certificationuserinfolist = certificationUserInfoDAO.selectByExample(example);
+        List<CertificationUserInfo> certificationuserinfolist = certificationUserInfoDAO.selectByExampleWithBLOBs(example);
         System.out.println("集合大小=================" + certificationuserinfolist.size());
         if (certificationuserinfolist.size() == 0) {
             params.put("success", "fails");
