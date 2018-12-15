@@ -408,7 +408,7 @@ public class JingdongController {
         ApplyAmountExample.Criteria criteria = example.createCriteria();
         criteria.andUserIdEqualTo(uid);*/
         //通过userID查询申请额度信息
-//        List<ApplyAmount> applyamountlist = applyAmountDAO.selectByExample(example);
+//        List<ApplyAmount> applyamountlist = applyAmountDAO.selectByExampleWithBLOBs(example);
 //        System.out.println("集合大小=================" + applyamountlist.size());
 /*
         if (applyamountlist.size() == 0) {
@@ -673,7 +673,7 @@ public class JingdongController {
         CertificationUserInfoExample example = new CertificationUserInfoExample();
         CertificationUserInfoExample.Criteria criteria = example.createCriteria();
         criteria.andUserIdEqualTo(params.getString("userId"));
-        List<CertificationUserInfo> certificationuserinfolist = certificationUserInfoDAO.selectByExample(example);
+        List<CertificationUserInfo> certificationuserinfolist = certificationUserInfoDAO.selectByExampleWithBLOBs(example);
         System.out.println("集合大小=================" + certificationuserinfolist.size());
         if (certificationuserinfolist.size() == 0) {
             record.setCreateTime(new Date());
