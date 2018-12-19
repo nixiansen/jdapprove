@@ -316,7 +316,7 @@ public class JingdongController {
 
     @ApiOperation("3.6获取魔蝎淘宝数据爬取结果回调接口")
     @RequestMapping(value = "/moxieTaobaoCallback")
-    public void moxieTaobaoCallback(@RequestBody String param,HttpServletResponse response) {
+    public void moxieTaobaoCallback(@RequestBody String param, HttpServletResponse response) {
         log.info("3.6获取魔蝎淘宝数据爬取结果回调接口入参 param= " + param);
         JSONObject params = JSONObject.parseObject(param);
         params.put("taskId", params.getString("task_id"));
@@ -339,7 +339,7 @@ public class JingdongController {
 
     @ApiOperation("3.7获取魔蝎学信网数据爬取结果回调接口")
     @RequestMapping(value = "/moxieXuexinCallback")
-    public void moxieXuexinCallback(@RequestBody String param,HttpServletResponse response) {
+    public void moxieXuexinCallback(@RequestBody String param, HttpServletResponse response) {
         log.info("3.7获取魔蝎学信网数据爬取结果回调接口 param= " + param);
         JSONObject params = JSONObject.parseObject(param);
         params.put("taskId", params.getString("task_id"));
@@ -361,7 +361,7 @@ public class JingdongController {
 
     @ApiOperation("3.8获取魔蝎运营商数据爬取结果回调接口")
     @RequestMapping(value = "/moxieYysCallback")
-    public void moxieYysCallback(@RequestBody String param,HttpServletResponse response) {
+    public void moxieYysCallback(@RequestBody String param, HttpServletResponse response) {
         log.info("3.8获取魔蝎运营商数据爬取结果回调接口 param= " + param);
         JSONObject params = JSONObject.parseObject(param);
         params.put("taskId", params.getString("task_id"));
@@ -526,11 +526,21 @@ public class JingdongController {
             }
         } else {
             JSONObject result = new JSONObject();
-            String rs = StringUtils.strip(result.toJSONString(certificationuserinfolist.get(0)), "[]");
-            data = JSONObject.parseObject(rs);
-            data.put("idCardValidDate", data.getString("idCardValidDate").replace("~", "-"));
-            result.put("data", data);
-            log.info("获取用户基本信息数据接口返回参数 data= " + data);
+            CertificationUserInfo cer = (CertificationUserInfo) certificationuserinfolist.get(0);
+            if (cer.getAddressBook().isEmpty() || cer.getAddressBook() == null || cer.getAddressBook()=="") {
+                String rs = StringUtils.strip(result.toJSONString(certificationuserinfolist.get(0)), "[]");
+                data = JSONObject.parseObject(rs);
+                data.put("idCardValidDate", data.getString("idCardValidDate").replace("~", "-"));
+                result.put("data", data);
+                log.info("获取用户基本信息数据接口返回参数 data======================= " + data);
+            }else {
+                String rs = StringUtils.strip(result.toJSONString(certificationuserinfolist.get(0)), "[]");
+                data = JSONObject.parseObject(rs);
+                data.put("idCardValidDate", data.getString("idCardValidDate").replace("~", "-").replace(" ",""));
+                data.put("addressBook",data.getString("addressBook").replace("tel","phones").replace(" ","").replace("+","").replace("-",""));
+                result.put("data", data);
+                log.info("获取用户基本信息数据接口返回参数 data= " + data);
+            }
             try {
                 byte[] publicEncrypt = rsaUtils.encryptByPublicKey(result.toJSONString().getBytes("UTF-8"), appSecret);
                 String byte2Base64 = base64Utils.encode(publicEncrypt);
