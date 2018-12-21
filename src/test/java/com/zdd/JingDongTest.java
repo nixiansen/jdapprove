@@ -2,6 +2,7 @@ package com.zdd;
 
 import com.alibaba.fastjson.JSONObject;
 import com.zdd.risk.api.JingdongController;
+import com.zdd.risk.utils.HttpUtils;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +29,6 @@ public class JingDongTest {
     private static final Logger log = LoggerFactory.getLogger(JingdongController.class);
 
 
-
     @ApiOperation("3.1请求ZRobot风控服务接口")
     @RequestMapping(value = "/test1")
     public void test1() {
@@ -38,11 +38,10 @@ public class JingDongTest {
         jsonObject.put("payIndex", "1");
         jsonObject.put("userId", "1234");
         jsonObject.put("applyId", "1233");
-        jsonObject.put("productId","1");
+        jsonObject.put("productId", "1");
 
 
-
-        JSONObject a= jingdongController.approve(jsonObject.toJSONString());
+        JSONObject a = jingdongController.approve(jsonObject.toJSONString());
 
         System.out.println(jsonObject.toString());
 
@@ -60,35 +59,29 @@ public class JingDongTest {
         jsonObject.put("approveCredit", "1233");
 
 
-
-
-        JSONObject a= jingdongController.approveResultFromZRobot(jsonObject.toJSONString());
+        JSONObject a = jingdongController.approveResultFromZRobot(jsonObject.toJSONString());
 
         System.out.println(a);
 
     }
 
 
-    @ApiOperation("3.3授权额度回调接口")
+    @ApiOperation("3.3返回ZRobot风控服务回调接口")
     @RequestMapping(value = "/test3")
     public void test3() {
 
         JSONObject jsonObject = new JSONObject();
         //测试数据
-        jsonObject.put("bizno", "1233");
-        jsonObject.put("userId", "1233");
-        jsonObject.put("applyid", "1233");
+        jsonObject.put("bizno", "154330580991000002");
+        jsonObject.put("userId", "jirhat17f9us");
+        jsonObject.put("applyid", "154330580991000001");
 
 
-
-
-         jingdongController.resultApproveToZRobot("1234");
+        jingdongController.resultApproveToZRobot("jirhat17f9us");
 
         System.out.println("1");
 
     }
-
-
 
 
     @ApiOperation("4.1获取用户申请额度接口")
@@ -96,10 +89,9 @@ public class JingDongTest {
     public void test4() {
 
 
+        String result = jingdongController.getApplyAmountFromZDD("123");
 
-        String result= jingdongController.getApplyAmountFromZDD("123");
-
-     //   System.out.println(result);
+        //   System.out.println(result);
 
     }
 
@@ -109,8 +101,7 @@ public class JingDongTest {
     public void test5() {
 
 
-
-        String result= jingdongController.getBaseInfoFromZDD("123");
+        String result = jingdongController.getBaseInfoFromZDD("123");
 
         //   System.out.println(result);
 
@@ -137,8 +128,6 @@ public class JingDongTest {
     }
 
 
-
-
     @ApiOperation("4.4用户申请额度信息存储")
     @RequestMapping(value = "/test7")
     public void test7() {
@@ -148,10 +137,10 @@ public class JingDongTest {
         //测试数据
         jsonObject.put("userid", "1");
         jsonObject.put("modelno", "1");
-        jsonObject.put("applyamount","100");
-        jsonObject.put("applydays","10");
-        jsonObject.put("addressPermanent","北京");
-        jsonObject.put("age","13");
+        jsonObject.put("applyamount", "100");
+        jsonObject.put("applydays", "10");
+        jsonObject.put("addressPermanent", "北京");
+        jsonObject.put("age", "13");
 
 
         jingdongController.insertApplyAmount(jsonObject.toJSONString());
@@ -171,12 +160,22 @@ public class JingDongTest {
 
         jingdongController.insertBaseInfo(jsonObject.toJSONString());
 
-
     }
 
 
+    @ApiOperation("4.6http请求测试")
+    @RequestMapping(value = "/test9")
+    public void test9(){
 
 
+        System.out.println("1");
+
+        //通过userID查询数据
+        HttpUtils http = new HttpUtils();
+        String result = http.post("http://localhost:8083", "jp3vu1fxkru7");
+
+
+    }
 
 
 

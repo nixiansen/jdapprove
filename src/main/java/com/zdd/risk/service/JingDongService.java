@@ -3,6 +3,7 @@ package com.zdd.risk.service;
 import com.alibaba.fastjson.JSONObject;
 import com.zdd.risk.bean.Accredit;
 import com.zdd.risk.bean.ApproveResult;
+import com.zdd.risk.bean.TempShuju;
 import com.zdd.risk.dao.JingDongDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -123,6 +124,18 @@ public class JingDongService {
         String resultUserid = jingdongdao.selectUserId(taskId);
 //        System.out.println(resultUserid);
         return resultUserid;
+    }
+
+
+
+    //修复数据
+    public  List selectTemp(){
+
+        List<TempShuju>  list=jingdongdao.selectTemp();
+
+
+return list;
+
     }
 
 }
