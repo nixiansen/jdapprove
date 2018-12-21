@@ -306,8 +306,8 @@ public class JingdongController {
         if (a != 1) {
             reMap.put("success", "false");
             log.info("往risk_approveResult表插入数据失败" + JSONObject.toJSONString(record));
-        } else {
-            resultApproveToZRobot(params.getString("userId"));
+//        } else {
+//            resultApproveToZRobot(params.getString("userId"));
         }
         //TODO
         //回调业务系统
